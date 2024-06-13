@@ -12,7 +12,6 @@
             align-items: center;
             height: 100vh;
             background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
         }
 
         .main {
@@ -29,13 +28,10 @@
             border: 2px solid black;
             margin: 20px 0;
             position: relative;
-            border-radius: 10px;
-            overflow: hidden;
         }
 
         canvas {
             display: block;
-            border-radius: 10px;
         }
 
         .toolbar {
@@ -43,14 +39,6 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .toolbar .input-group,
-        .toolbar .btn {
-            flex: 1 1 auto;
-            min-width: 120px;
-            margin: 5px;
         }
 
         .toolbar .form-control,
@@ -223,10 +211,10 @@
         redoButton.addEventListener('click', () => {
             if (redoList.length > 0) {
                 let restoreState = redoList.pop();
-                history.push(restoreState);
                 let img = new Image();
                 img.src = restoreState;
                 img.onload = () => ctx.drawImage(img, 0, 0);
+                saveState();
             }
         });
 
@@ -270,4 +258,3 @@
 </body>
 
 </html>
-
