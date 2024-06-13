@@ -1,71 +1,79 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Advanced Signature App</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Signature</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f8f9fa;
-        }
-
         .main {
-            width: 90%;
-            max-width: 1200px;
-            text-align: center;
-            padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
-        .canvas-container {
+        .canvas {
             border: 2px solid black;
-            margin: 20px 0;
-            position: relative;
         }
 
-        canvas {
-            display: block;
-        }
-
-        .toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .toolbar .form-control,
-        .toolbar .form-select {
-            width: auto;
-        }
-
+        .top,
         .bottom {
-            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 20px 0 20px 0;
+        }
+
+        .block,
+        input,
+        select,
+        button {
+            width: 80%;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bottom>button {
+            margin: 10px;
+        }
+
+        .top>.block {
+            margin: 10px;
+        }
+
+        .block>p {
+            margin: 10px auto;
+            width: 50%;
         }
     </style>
+    <link rel="icon" href="favicon.png">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 
 <body>
     <div class="main">
-        <div class="toolbar">
-            <div class="input-group">
-                <label class="input-group-text" for="colorPicker"><i class="fas fa-palette"></i></label>
-                <input class="form-control form-control-color" type="color" id="colorPicker" value="#000000">
+        <div class="top">
+            <div class="block">
+                <p>Text color picker</p>
+                <input class="form-control" type="color" id="colorPicker">
             </div>
-            <div class="input-group">
-                <label class="input-group-text" for="canvasColor"><i class="fas fa-fill-drip"></i></label>
-                <input class="form-control form-control-color" type="color" id="canvasColor" value="#ffffff">
+            <div class="block">
+                <p>Background</p>
+                <input class="form-control" type="color" id="canvasColor">
             </div>
-            <div class="input-group">
-                <label class="input-group-text" for="fontSizePicker"><i class="fas fa-text-height"></i></label>
-                <select class="form-select" id="fontSizePicker">
+            <!-- <div class="block">
+                <p>Thiccness slider</p>
+                <input type="range" class="form-control-range" id="lineWidthSlider" min="1" max="100" value="1">
+            </div> -->
+            <div class="block">
+                <p>Font size</p>
+                <select class="custom-select" type="select" id="fontSizePicker">
+                    <option value="5">5px</option>
                     <option value="10">10px</option>
                     <option value="20">20px</option>
                     <option value="30">30px</option>
@@ -73,187 +81,106 @@
                     <option value="50">50px</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label class="input-group-text" for="shapePicker"><i class="fas fa-shapes"></i></label>
-                <select class="form-select" id="shapePicker">
-                    <option value="none">Free Draw</option>
-                    <option value="rectangle">Rectangle</option>
-                    <option value="circle">Circle</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <input class="form-control" type="text" id="drawText" placeholder="Enter text">
-                <button type="button" class="btn btn-info" id="addTextButton"><i class="fas fa-font"></i> Add Text</button>
-            </div>
-            <button type="button" class="btn btn-danger" id="clearButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Clear Canvas"><i class="fas fa-trash-alt"></i></button>
-            <button type="button" class="btn btn-warning" id="undoButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Undo"><i class="fas fa-undo"></i></button>
-            <button type="button" class="btn btn-info" id="redoButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Redo"><i class="fas fa-redo"></i></button>
-            <button type="button" class="btn btn-success" id="saveButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Save as PNG"><i class="fas fa-save"></i></button>
-            <button type="button" class="btn btn-primary" id="retrieveButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Retrieve Saved Signature"><i class="fas fa-folder-open"></i></button>
-            <button type="button" class="btn btn-secondary" id="pdfButton" data-bs-toggle="tooltip" data-bs-placement="top" title="Save as PDF"><i class="fas fa-file-pdf"></i></button>
         </div>
 
-        <div class="canvas-container">
-            <canvas id="myCanvas" width="800" height="500"></canvas>
+        <canvas class="canvas" id="myCanvas" width="800" height="500"></canvas>
+
+        <div class="bottom">
+            <button type="button" class="btn btn-danger" id="clearButton">Clear</button>
+            <button type="button" class="btn btn-success" id="saveButton">Save & download</button>
+            <button type="button" class="btn btn-warning" id="retrieveButton">Retrieve saved signature</button>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
     <script>
+
         let history = [];
-        let redoList = [];
 
         const colorPicker = document.getElementById('colorPicker');
         const canvasColor = document.getElementById('canvasColor');
         const canvas = document.getElementById('myCanvas');
         const undoButton = document.getElementById('undoButton');
-        const redoButton = document.getElementById('redoButton');
         const clearButton = document.getElementById('clearButton');
         const saveButton = document.getElementById('saveButton');
-        const retrieveButton = document.getElementById('retrieveButton');
-        const fontSizePicker = document.getElementById('fontSizePicker');
-        const drawTextInput = document.getElementById('drawText');
-        const addTextButton = document.getElementById('addTextButton');
-        const pdfButton = document.getElementById('pdfButton');
-        const shapePicker = document.getElementById('shapePicker');
+        const fontPicker = document.getElementById('fontPicker');
+        const textInput = document.getElementById('textInput');
+        const fontSizePicker = document.getElementById('fontSizePicker'); // add new element
+
 
         const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
-        let shape = 'none';
 
         colorPicker.addEventListener('change', (event) => {
+            ctx.fillStyle = event.target.value;
             ctx.strokeStyle = event.target.value;
         });
 
         canvasColor.addEventListener('change', (event) => {
             ctx.fillStyle = event.target.value;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, 800, 500);
         });
 
         canvas.addEventListener('mousedown', (event) => {
             isDrawing = true;
             lastX = event.offsetX;
             lastY = event.offsetY;
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
         });
 
         canvas.addEventListener('mousemove', (event) => {
-            if (!isDrawing) return;
-            if (shape === 'none') {
+            if (isDrawing) {
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
                 ctx.lineTo(event.offsetX, event.offsetY);
                 ctx.stroke();
+
                 lastX = event.offsetX;
                 lastY = event.offsetY;
             }
         });
 
-        canvas.addEventListener('mouseup', (event) => {
-            if (shape === 'rectangle') {
-                ctx.strokeRect(lastX, lastY, event.offsetX - lastX, event.offsetY - lastY);
-            } else if (shape === 'circle') {
-                let radius = Math.sqrt(Math.pow((event.offsetX - lastX), 2) + Math.pow((event.offsetY - lastY), 2));
-                ctx.beginPath();
-                ctx.arc(lastX, lastY, radius, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-            isDrawing = false;
-            saveState();
+        canvas.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
         });
 
-        canvas.addEventListener('mouseout', () => {
+        canvas.addEventListener('mouseup', () => {
             isDrawing = false;
         });
 
         fontSizePicker.addEventListener('change', (event) => {
             ctx.lineWidth = event.target.value;
-        });
-
-        shapePicker.addEventListener('change', (event) => {
-            shape = event.target.value;
+            // ctx.font = `${fontPicker.value} ${event.target.value}px`;
         });
 
         clearButton.addEventListener('click', () => {
+            // Clear the canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            saveState();
-        });
+        })
 
+        // Add event listener for the save button
         saveButton.addEventListener('click', () => {
             localStorage.setItem('canvasContents', canvas.toDataURL());
+            // Create a new <a> element
             let link = document.createElement('a');
-            link.download = 'signature.png';
+
+            // Set the download attribute and the href attribute of the <a> element
+            link.download = 'my-canvas.png';
             link.href = canvas.toDataURL();
+
+            // Dispatch a click event on the <a> element
             link.click();
         });
 
+        // Add event listener for the retrieve button
         retrieveButton.addEventListener('click', () => {
+            // Retrieve the saved canvas contents from local storage
             let savedCanvas = localStorage.getItem('canvasContents');
+
             if (savedCanvas) {
                 let img = new Image();
                 img.src = savedCanvas;
-                img.onload = () => ctx.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0);
             }
         });
 
-        undoButton.addEventListener('click', () => {
-            if (history.length > 1) {
-                redoList.push(history.pop());
-                let restoreState = history[history.length - 1];
-                let img = new Image();
-                img.src = restoreState;
-                img.onload = () => ctx.drawImage(img, 0, 0);
-            }
-        });
-
-        redoButton.addEventListener('click', () => {
-            if (redoList.length > 0) {
-                let restoreState = redoList.pop();
-                let img = new Image();
-                img.src = restoreState;
-                img.onload = () => ctx.drawImage(img, 0, 0);
-                saveState();
-            }
-        });
-
-        addTextButton.addEventListener('click', () => {
-            let text = drawTextInput.value;
-            if (text) {
-                ctx.font = `${fontSizePicker.value}px Arial`;
-                ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-                saveState();
-            }
-        });
-
-        pdfButton.addEventListener('click', () => {
-            html2canvas(canvas).then((canvas) => {
-                let imgData = canvas.toDataURL('image/png');
-                let doc = new jsPDF();
-                doc.addImage(imgData, 'PNG', 10, 10);
-                doc.save('signature.pdf');
-            });
-        });
-
-        function saveState() {
-            let canvasContents = canvas.toDataURL();
-            history.push(canvasContents);
-            if (history.length > 50) {
-                history.shift();
-            }
-        }
-
-        ctx.fillStyle = canvasColor.value;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        saveState();
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
     </script>
 </body>
 
